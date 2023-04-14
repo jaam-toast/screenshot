@@ -1,11 +1,11 @@
 {
-  "name": "screenshot",
+  "name": "jaamtoast-screenshot",
   "version": "1.0.0",
-  "description": "Serverless API to take screenshots of websites with Puppeteer.",
+  "description": "jaamtoast's screenshot api server with Puppeteer.",
   "dependencies": {
     "chrome-aws-lambda": "7.0.0",
-    "puppeteer-core": "13.1.2",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "puppeteer-core": "13.1.2"
   },
   "devDependencies": {
     "typescript": "4.1.5"
