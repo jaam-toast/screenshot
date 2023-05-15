@@ -1,5 +1,7 @@
-import { launch, Page } from "puppeteer-core";
+import puppeteer from "puppeteer-core";
 import chrome from "chrome-aws-lambda";
+
+import type { Page } from "puppeteer-core";
 
 let _page: Page | null;
 
@@ -11,7 +13,7 @@ async function getPage() {
     executablePath: await chrome.executablePath,
     headless: chrome.headless,
   };
-  const browser = await launch(options);
+  const browser = await puppeteer.launch(options);
 
   _page = await browser.newPage();
 
@@ -28,14 +30,16 @@ export async function getScreenshot({
   height?: number;
 }) {
   const page = await getPage();
-
+  console.log("1");
   await page.goto(url);
+  console.log("2");
   await page.setViewport({
     width: Number(width),
     height: Number(height),
     deviceScaleFactor: 2,
   });
-  await page.on("load");
-
+  console.log("3");
+  // await new Promise((res) => page.once("load", () => res(null)));
+  console.log("4");
   return page.screenshot();
 }

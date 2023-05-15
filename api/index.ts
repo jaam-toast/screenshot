@@ -1,34 +1,5 @@
 import { getScreenshot } from "./_lib/puppeteer";
-
-module.exports = async (req, res) => {
-  if (!req.query.url) {
-    return res.status(400).send("No url query specified.");
-  }
-  if (!checkUrl(req.query.url)) {
-    return res.status(400).send("Invalid url query specified.");
-  }
-
-  try {
-    const file = await getScreenshot({
-      url: req.query.url,
-      ...(req.query.width ? { width: req.query.width } : {}),
-      ...(req.query.height ? { height: req.query.height } : {}),
-    });
-    res.setHeader("Content-Type", "image/png");
-    res.setHeader(
-      "Cache-Control",
-      "public, immutable, no-transform, s-maxage=86400, max-age=86400"
-    );
-    res.status(200).end(file);
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .send(
-        "The server encountered an error. You may have inputted an invalid query."
-      );
-  }
-};
+import Fastify, { FastifyRequest } from "fastify";
 
 function checkUrl(string: string) {
   try {
@@ -39,3 +10,56 @@ function checkUrl(string: string) {
 
   return true;
 }
+
+const fastify = Fastify({
+  logger: true,
+});
+
+type GetScreenshotRequest = FastifyRequest<{
+  Querystring: {
+    url: string;
+    width?: string;
+    height?: string;
+  };
+}>;
+
+fastify.get("/", async (request: GetScreenshotRequest, reply) => {
+  const { url, width, height } = request.query;
+
+  if (!url) {
+    return reply.status(400).send("No url query specified.");
+  }
+  if (!checkUrl(url)) {
+    return reply.status(400).send("Invalid url query specified.");
+  }
+
+  try {
+    const file = await getScreenshot({
+      url,
+      ...(width ? { width: Number(width) } : {}),
+      ...(height ? { height: Number(height) } : {}),
+    });
+    reply.header("Content-Type", "image/png");
+    reply.header(
+      "Cache-Control",
+      "public, immutable, no-transform, s-maxage=86400, max-age=86400"
+    );
+    reply.status(200).send(file);
+  } catch (error) {
+    console.log(error);
+    reply
+      .status(500)
+      .send(
+        "The server encountered an error. You may have inputted an invalid query."
+      );
+  }
+});
+
+fastify.listen({ port: 9000 }, (err, address) => {
+  if (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+
+  fastify.log.info(`Server is now listening on ${address}`);
+});
