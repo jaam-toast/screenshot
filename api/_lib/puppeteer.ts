@@ -30,16 +30,13 @@ export async function getScreenshot({
   height?: number;
 }) {
   const page = await getPage();
-  console.log("1");
+
   await page.goto(url);
-  console.log("2");
   await page.setViewport({
     width: Number(width),
     height: Number(height),
     deviceScaleFactor: 2,
   });
-  console.log("3");
-  // await new Promise((res) => page.once("load", () => res(null)));
-  console.log("4");
+
   return page.screenshot();
 }
