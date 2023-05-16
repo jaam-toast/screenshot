@@ -9,9 +9,9 @@ async function getPage() {
   if (_page) return _page;
 
   const options = {
-    args: chrome.args,
+    args: chrome.args.concat("--no-sandbox", "--disable-setuid-sandbox"),
+    headless: false,
     executablePath: await chrome.executablePath,
-    headless: chrome.headless,
   };
   const browser = await puppeteer.launch(options);
 
