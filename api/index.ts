@@ -1,5 +1,12 @@
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import dotenv from "dotenv";
+
 import { getScreenshot } from "./_lib/puppeteer";
-import Fastify, { FastifyRequest } from "fastify";
+
+import type { FastifyRequest } from "fastify";
+
+dotenv.config();
 
 function checkUrl(string: string) {
   try {
@@ -14,6 +21,14 @@ function checkUrl(string: string) {
 const fastify = Fastify({
   logger: true,
 });
+
+console.log(process.env.CLIENT_URL);
+
+(async () =>
+  await fastify.register(cors, {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }))();
 
 type GetScreenshotRequest = FastifyRequest<{
   Querystring: {

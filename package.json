@@ -6,7 +6,9 @@
     "start": "tsc && node lib/index.js"
   },
   "dependencies": {
+    "@fastify/cors": "^8.2.1",
     "chrome-aws-lambda": "^10.1.0",
+    "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "fastify": "^4.17.0",
     "puppeteer-core": "^10.1.0"
