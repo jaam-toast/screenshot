@@ -22,11 +22,9 @@ const fastify = Fastify({
   logger: true,
 });
 
-console.log(process.env.CLIENT_URL);
-
 (async () =>
   await fastify.register(cors, {
-    origin: process.env.CLIENT_URL,
+    origin: [process.env.CLIENT_PRODUCTION_URL!, process.env.CLIENT_URL!],
     credentials: true,
   }))();
 
